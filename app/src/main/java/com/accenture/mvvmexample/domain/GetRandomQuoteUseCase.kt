@@ -1,15 +1,16 @@
 package com.accenture.mvvmexample.domain
 
+import com.accenture.mvvmexample.data.QuoteRepository
 import com.accenture.mvvmexample.data.model.QuoteModel
-import com.accenture.mvvmexample.data.model.QuoteProvider
+import com.accenture.mvvmexample.domain.model.Quote
 import javax.inject.Inject
 
-class GetRandomQuoteUseCase @Inject constructor(private val quoteProvider: QuoteProvider){
+class GetRandomQuoteUseCase @Inject constructor(private val repository: QuoteRepository){
 
-    operator fun invoke(): QuoteModel? {
-        val quotes: List<QuoteModel> = quoteProvider.quotes
+    suspend operator fun invoke(): Quote? {
+        val quotes = repository.getAllQuotesFromDatabase()
         if (!quotes.isNullOrEmpty()) {
-            val randonNumber: Int = (0..quotes.size - 1).random()
+            val randonNumber: Int = (quotes.indices).random()
             return quotes[randonNumber]
         }
         return null
